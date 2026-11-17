@@ -141,6 +141,16 @@ input.nof, select.nof { border-color: var(--bad); background: var(--bad-bg); }
 .fb.no { background: var(--bad-bg); color: var(--bad); }
 .fb.part { background: var(--part-bg); color: var(--part); }
 .fb .ans { color: var(--fg); display: block; margin-top: 2px; }
+.rule { margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); display: grid; gap: 6px; }
+.rule .rh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: space-between; }
+.rule .ref { font-family: var(--f-mono); font-size: 12px; color: var(--accent); }
+.rule .badge { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; background: var(--good-bg); color: var(--good); }
+.rule.note .badge, .rule.none .badge { background: var(--sunk); color: var(--muted); }
+.rule.differs { border-color: var(--part); }
+.rule.differs .badge { background: var(--part-bg); color: var(--part); }
+.rule blockquote { margin: 0; padding-left: 10px; border-left: 3px solid var(--line); font-size: 13.5px; color: var(--fg); }
+.rule .rnote { margin: 0; font-size: 13px; color: var(--muted); }
+.rule.differs .rnote { color: var(--fg); }
 .qfoot { display: flex; justify-content: flex-end; gap: 8px; }
 
 /* protocol */
@@ -475,6 +485,125 @@ const PROTOCOLS = [
       [42, "F", L("128 131 x132"), L("x160 160 x162"), 131, 160, 291, [3, 5, 5]] ]] ] }
 ];
 
+// Rule references from IWF TCRR 2026. s: "match" = supports the 2025 key, "note" = supports it but wording/detail changed,
+// "differs" = the 2026 rule gives a different answer, "none" = no direct rule; nearest rule shown.
+const R = (ref, q, s = "match", note = "") => ({ ref, q, s, note });
+const RULES = {
+  1: R("2.5.1.5", "Incorrect Movements for All Lifts: Bending and extending the elbows during the recovery."),
+  2: R("6.8.2", "Factors to decide the classification of athletes in Total: 1. best result – highest first; if identical, then: 2. best Clean & Jerk result’s attempt number – the Athlete who achieved the Total result earliest according to the Calling Order 6.6.6.", "match", "Bodyweight is not a tie-breaker."),
+  3: R("2.2.1 / 2.3.2", "The Referees give the signal to lower the barbell as soon as the athlete becomes motionless in all parts of the body."),
+  4: R("2.4.1", "GENERAL RULES FOR ALL LIFTS: The technique known as “hooking” is permitted. It consists of covering the thumb with the other fingers of the same hand at the moment of gripping the barbell.", "match", "Hooking is allowed in all lifts, not only the Clean & Jerk."),
+  5: R("2.4.2 / 7.10.6", "In both lifts, the Referees must count as “No lift” any unfinished attempt in which the barbell has reached the height of the knees. … The Timekeeper restarts the timing clock if the barbell does not reach the height of the athletes’ knees."),
+  6: R("2.4.3", "After the Referees’ signal to lower the barbell, the athlete must lower it in front of the body. The grip on the barbell must only be released when it has passed the level of the shoulders."),
+  7: R("2.5.1.3", "Incorrect Movements for All Lifts: Pause during the extension of the arms."),
+  8: R("1.1.2", "YOUTH: 13 - 17 years of age; JUNIOR: 15 - 20 years of age; SENIOR: 15+ years of age. All age groups are calculated in the athlete’s year of birth."),
+  9: R("Regulation to 6.4, item 10", "Athletes must be weighed in the weightlifting costume that they will be competing in. Athletes must not wear shoes or socks or any other footwear during weigh-in."),
+  10: R("2.5.1.1", "Pulling from the hang, defined as: stopping the upward movement of the barbell during the pull. (Listed under Incorrect Movements for All Lifts.)"),
+  11: R("1.2.1 / 1.2.3", "Junior / Senior men: 60, 65, 70, 75, 85, 95, 110, +110 kg. Youth men: 55, 60, 65, 70, 75, 85, 95, +95 kg.", "differs",
+    "The 2026 men’s categories are different from the 2025 answer key (Junior / Senior 60, 65, 71, 79, 88, 94, 110, +110; Youth 56, 60, 65, 71, 79, 88, 94, +94). This test still marks against the 2025 key."),
+  12: R("1.2.2 / 1.2.4", "Junior / Senior women: 49, 53, 57, 61, 69, 77, 86, +86 kg. Youth women: 45, 49, 53, 57, 61, 69, 77, +77 kg.", "differs",
+    "The 2026 women’s categories are different from the 2025 answer key (Junior / Senior 48, 53, 58, 63, 69, 77, 86, +86; Youth 44, 48, 53, 58, 63, 69, 77, +77). This test still marks against the 2025 key."),
+  13: R("2.5.1.11", "Touching the barbell with his / her footwear. If an athlete touches the barbell with his / her footwear before the attempt the Referees must press Red. If the barbell is touched after a successful attempt with his / her footwear the Referees decision will not be reversed, however the Jury will give a warning to the Athlete, if the Athlete repeats this action on a subsequent lift, the lift will be a No Lift.", "note",
+    "Still an incorrect movement, but 2026 adds a warning-first rule when the touch happens after a successful attempt."),
+  14: R("2.5.1.2", "Touching the platform with any part of the body other than the feet during the execution of the lift."),
+  15: R("2.3.1 / 2.6.3", "The athlete’s feet must return to the same line and the legs must be fully extended before starting the Jerk. … Incomplete movements: Failing to fully extend the knees at the completion of the lift."),
+  16: R("2.5.1.6", "Leaving the competition platform or touching the area outside the competition platform with any part of the body before the complete execution of the lift.", "match", "Only touching the outside area is a fault; shoes hanging over the edge without touching it are not."),
+  17: R("2.5.1.4", "Finishing with a press-out, defined as: continuing the extension of the arms after the athlete has reached the lowest point of his / her position in the squat or split for both the Snatch and the Jerk."),
+  18: R("2.6.2 / 7.7.5", "Incomplete movements and positions: Failing to finish with the feet and the barbell in line and parallel to the plane of the trunk. … Referees must be certain to allow the athlete every chance to complete the lift. Once the Referee is certain that the athlete has completed the lift; he / she indicates the decision.", "match", "An incomplete position is not yet a decision: the Referees wait for the athlete to finish."),
+  19: R("2.5.1.8", "Failing to replace the complete barbell on the competition platform. (Listed under Incorrect Movements for All Lifts.)"),
+  20: R("4.7.5 / 2.5", "Hair and any items worn on the head are considered to be part of the head.", "none",
+    "The 2026 list of incorrect movements (2.5) does not include touching the head with the bar, which supports answer a. There is no rule that says this word for word."),
+  21: R("2.4.5", "When snatching or cleaning in the squat style, the athlete may assist their recovery by swinging or rocking their body while in the squat position."),
+  22: R("2.5.3.2", "Incorrect Movements for the Clean: Touching the thighs or the knees with the elbows or the upper arms."),
+  23: R("2.5.3.1", "Resting or placing the barbell on the chest at an intermediate point before its final position producing a “double clean”; often referred to as a “dirty clean”. (Incorrect Movements for the Clean.)"),
+  24: R("1.2.7", "The maximum participating team must be spread amongst the bodyweight categories with a maximum of two (2) athletes per category."),
+  25: R("2.5.4.2", "Incorrect movements for the Jerk: Any deliberate oscillation of the barbell to gain advantage. The athlete must become motionless before starting the Jerk."),
+  26: R("2.3.2", "Before the Jerk, the athlete may adjust the position of the barbell for the following reasons: … d) to change the width of the grip."),
+  27: R("3.3.2.2", "Competition platform: square; measures four hundred (400) cm on each side; measures ten (10) cm in height."),
+  28: R("3.3.3.3 / 3.3.3.4 / 3.3.3.8", "A men’s bar weighs twenty (20) kg. A women’s bar weighs fifteen (15) kg. Collars: two (2) collars per barbell; weight = 2.5 kg each."),
+  29: R("Regulation to 3.3.3, item 5", "WOMEN’S BAR: grip section = 2.5 cm diameter / 131 cm long. (The men’s bar grip section is 2.8 cm.)"),
+  30: R("3.3.2.3", "Training / warm-up platform: measures three hundred (300) cm wide; measures two hundred fifty to three hundred (250-300) cm in length."),
+  31: R("3.3.3.6", "Competition discs: 25 kg red, 20 kg blue, 15 kg yellow, 10 kg green, 5 kg white, 2.5 kg red, 2 kg blue, 1.5 kg yellow, 1 kg green, 0.5 kg white."),
+  32: R("Regulation to 3.3.6.1, item 2", "One (1) apparatus giving a visual and audible “Down” signal is placed on a stand in front of the competition platform / stage, one hundred (100) cm either side of the Centre Referee."),
+  33: R("3.3.6.5", "When two (2) of the Referees have provided identical decisions, a visual and audible “Down” signal is given to the athlete to replace the barbell on the competition platform."),
+  34: R("3.3.6.9", "After the visible and audible “Down” signal and before the decision lights operate, the Referees have a three (3) second window to reverse their decision."),
+  35: R("3.3.5.1", "Athlete Bibs are worn for athlete identification during competition. Athlete Bibs are supplied to athletes in each group indicating the athletes’ allocated start numbers."),
+  36: R("7.7.7", "Any Referee, who sees a mistake or fault during the execution of a lift, must immediately press the red button."),
+  37: R("Regulation to 6.4, item 10", "If an athlete weighs 250 grams or more than their officially entered bodyweight category, 250 grams is deducted … If an athlete weighs in the correct weight or less than their officially entered bodyweight category, 250 grams is deducted from the weight shown on the scales to allow for the weight of the costume.", "match", "The deduction applies to every athlete, whether over, under or within the category."),
+  38: R("4.7.1", "Only one unitard may be worn under the costume. The unitard must: be one piece or two pieces; be tight fitting; be collarless; may cover both elbows and / or knees; may be of any one colour; no pattern or design permitted."),
+  39: R("4.7.3", "Only one pair of shorts may be worn under the costume and the shorts must not be longer than the costume."),
+  40: R("4.4.2", "The maximum width of the belt is twelve (12) cm."),
+  41: R("2.5.4.1", "Incorrect movements for the Jerk: Any apparent effort to jerk which is not completed; including, lowering the body or bending the knees."),
+  42: R("4.5.1.5 / 4.5.3.4", "Any bandage worn on the trunk must be worn under the costume. … No tape or substitutes are allowed within ten (10) cm of the elbow area. The ten (10) cm area consists of five (5) cm above and five (5) cm below the elbow.", "note",
+    "Answer b is unchanged. Option c is wrong under 2026 too: the elbow area is now 10 cm (5 cm above and 5 cm below), not 8 cm."),
+  43: R("2.4.6", "The use of chalk (magnesium carbonate) is permitted."),
+  44: R("Regulation to 3.3.3, item 6", "Competition discs diameter: Discs ≥ 10 kg: 45 cm ± 0.1 cm tolerance."),
+  45: R("4.5.1.3", "Bandages may be worn both on the inner and outer surface of the hands and may be attached to the wrist."),
+  46: R("4.5.1.6", "No bandages or substitutes are allowed within ten (10) cm of the elbow area. The ten (10) cm area consists of five (5) cm above and five (5) cm below the elbow."),
+  47: R("4.5.2.2", "Sticking plasters worn on the fingers and thumb must not protrude in front of the fingertips."),
+  48: R("6.4.1", "The weigh-in of each competition begins three (3) hours before the start of the group concerned. Weigh-in lasts for one (1) hour.", "differs",
+    "Under 2026 the weigh-in begins 3 hours before the start, not 2 hours (answer c in the 2025 key). This test still marks against the 2025 key."),
+  49: R("2.4.4", "An athlete, who, for any reason, cannot fully extend the elbow(s), must report / display this fact to all on-duty Referees as well as the Jury prior to the start of competition … This is the sole responsibility of the athlete. The Jury may call the Competition Doctor to examine it."),
+  50: R("Regulation to 6.4, items 3–4", "Each athlete for all groups must be weighed in the presence of two Referees. Both of the Referees must be the same gender as the athlete. Both Referees verify the athlete’s bodyweight and provide it to the Competition Secretary (CS) … The CS records the athlete’s bodyweight."),
+  51: R("Regulation to 6.4, item 14", "An athlete who is under or over their officially entered bodyweight category may return to the weigh-in room as many times as necessary in order to make the bodyweight category."),
+  52: R("6.4.2 / Regulation to 3.3.7, item 9.2", "one (1) athlete – three (3) Passes … two (2) athletes – four (4) Passes … any additional athlete (for combined categories / Events) – one (1) additional Lead Coach Pass and one (1) additional Support Coach Pass per athlete. … One (1) Challenge Card is provided for each athlete at the weigh-in.", "note",
+    "2026 splits Warm-up Passes into Lead Coach and Support Coach Passes. The totals still match answer a (2 passes per additional athlete)."),
+  53: R("6.4.1 / 6.5.1", "The weigh-in of each competition begins three (3) hours before the start of the group concerned. … The competition officially starts with the introduction of athletes.", "differs",
+    "Under 2026 the introduction is 3 hours after the weigh-in begins, not 2 hours (answer b in the 2025 key). This test still marks against the 2025 key."),
+  54: R("4.5.1.1", "There is no limit to the length of the bandages.", "match", "The 2026 rules set no 10 cm width limit for wrist bandages."),
+  55: R("6.6.5", "The total weight of the starting attempts declared and actually taken in the Snatch and the Clean & Jerk must equal or exceed the weight of the verified Entry Total minus twenty (20) kg."),
+  56: R("Regulation to 6.6.5, item 2", "Example: An athlete enters a competition with a verified Entry Total of 200 kg. The total weight of the first attempts in the Snatch and Clean & Jerk must equal or exceed 180 kg (such as, 80 kg and 100 kg …).", "match", "Only the first Snatch attempt (80 kg) counts, so the Clean & Jerk must start at 100 kg or more."),
+  57: R("6.6.10", "When an athlete wishes to increase or decrease the weight originally selected, the Team Official / athlete must notify the Chief Marshal by signing the Athlete’s Card. In order to increase the weight the Team Official / athlete must sign the Athlete’s Card before the final call."),
+  58: R("6.6.12 / 6.6.11", "Before the first attempt and between two attempts the Team Official / athlete must notify and sign the next attempt on the Athlete’s Card; both for declaration and automatic increment. … If the Team Official / athlete fail to do so before the final call (30 seconds), the athlete will be called according to the automatic progression. When an athlete is taking consecutive attempts (2 minutes allocated time), the Team Official / athlete must declare the next attempt within the first thirty (30) seconds after being called.", "differs",
+    "Under 2026 the deadline is different for each clock: before the final call on the 1-minute clock, and within the first 30 seconds on the 2-minute clock. The 2025 key (a) says the first 30 seconds for both."),
+  59: R("6.6.2 / 6.6.3", "The weight of the barbell must always be a multiple of one (1) kg. The automatic progression after any successful attempt for the same athlete is one (1) kg."),
+  60: R("6.4.1", "Weigh-in lasts for one (1) hour."),
+  61: R("6.6.7", "One (1) minute (60 seconds) is allocated to each athlete between the calling of his / her name and the beginning of the attempt."),
+  62: R("6.6.14", "Once the Athlete’s Card has been signed the withdrawal is official and the athlete cannot re-enter the competition in that respective lift."),
+  63: R("6.6.7", "When an athlete attempts two (2) lifts in succession, he / she is allowed two (2) minutes (120 seconds) for the succeeding attempt."),
+  64: R("6.6.7", "If at the end of the allocated time the athlete has not raised the barbell from the competition platform to make the attempt, this attempt is declared “No lift” by the three (3) Referees."),
+  65: R("6.6.12", "Before the first attempt and between two attempts the Team Official / athlete must notify and sign the next attempt on the Athlete’s Card; both for declaration and automatic increment. This signature enables two (2) changes."),
+  66: R("6.6.1", "Once the announced weight is loaded on the barbell, and the clock has started, the weight cannot be reduced."),
+  67: R("Regulation to 6.4, item 15", "An athlete who fails to make the bodyweight within the allotted weigh-in time of their respective bodyweight category, in which he / she is officially entered, is excluded from the competition of the Event."),
+  68: R("6.6.6", "1. The weight of the barbell (lightest weight first) 2. The number of the attempt (lowest number first) 3. The sequence / order of the previous attempt(s) (the athlete who lifted earliest is first) 4. The start number of the athlete (lowest first)."),
+  69: R("6.7.1 / 6.7.2", "There is a ten (10) minute break after the Snatch portion to allow the athletes to warm up for the Clean & Jerk. The Jury, at its discretion and in consultation with the CD / TD may shorten or lengthen the break.", "note", "Still 10 minutes. 2026 adds that the Jury may shorten or lengthen it."),
+  70: R("7.2.3", "In hot weather or venues and subject to the authorisation of the Chair of the Jury, the jacket and / or tie / scarf may be removed.", "note", "2026 calls the President of the Jury the “Chair of the Jury”. The answer is the same."),
+  71: R("5.3.2.3 / 6.8.8", "Olympic gold, silver and bronze medals are awarded respectively to the first three (3) places for the Total … In IWF Events where medals are given for Total only athletes having no valid lifts in the Snatch are eliminated from competition and cannot continue in the Clean & Jerk."),
+  72: R("Regulation to 6.4, item 7", "The athletes are called one at a time into the weigh-in room, according to the progression of the athlete’s lot number."),
+  73: R("7.5.15", "If a lift is failed because the barbell is not equally loaded, or the platform is damaged or the barbell becomes disarranged during the lift; or there is an incursion or any other external interference, the Jury must grant an additional attempt for the affected athlete.", "match", "False because it is the Jury, not the Referees, who grants the extra attempt."),
+  74: R("7.8.3", "Technical Controller duties: Ensures that the FOP and the Sport Equipment are compliant with IWF TCRR."),
+  75: R("7.2.3", "Navy blue (colour code: PMS2767) jacket; Navy blue trousers / skirt; White shirt; IWF tie / scarf … IWF TO metal badge; pinned on the left lapel of the jacket; IWF TO badge sewn on the left breast pocket."),
+  76: R("3.3.6.11", "Should the Jury want to call any of the Referees to the Jury Table, the Chair of the Jury does so by pressing the button on the control panel, which gives an audible signal to the Referee(s) in question.", "note", "2026 says “Chair of the Jury” where the exam says “President of the Jury”."),
+  77: R("7.5.1", "The Jury has the ultimate control on the FOP and its primary function is to ensure that the TCRR are being correctly followed and applied."),
+  78: R("3.1.2.2 b", "Side Referees must be seated on the same line as and parallel with the Centre Referee, three hundred to four hundred (300-400) cm from the Centre Referee."),
+  79: R("7.5.2", "All Jury members must be Category 1 Technical Officials."),
+  80: R("Regulation to 6.4, item 12", "Athletes are entitled to wear jewelry, hair adornments and religious head gear during weigh-in. Athletes must not wear watches during weigh-in."),
+  81: R("7.5.6", "Errors in officiating may occur involuntarily and in such situations, the TO is allowed to explain his / her decision to the Jury, if desired or requested."),
+  82: R("7.5.5", "Throughout the course of the competition and after a first warning, the Jury, by unanimous vote, may replace any Technical Official whose decisions prove him / her to be incompetent."),
+  83: R("7.5.3 / 7.5.7", "The Jury is composed of four (4) members, one of which is the Chair. … When VPT is not in use: The four (4) member Jury shall not have the power to overturn a decision by the Referees … unless they are unanimous in the first instance. … When VPT is in use, the final outcome shall be determined by the majority vote of the combined panel of seven (7) officials.", "differs",
+    "There is no 5-member Jury in the 2026 rules. A Jury now has 4 members, and how it can overturn a decision depends on whether video playback (VPT) is in use. The 2025 key answer (b, majority of a 5-member Jury) is not in the 2026 rulebook."),
+  84: R("Regulation to 7.3, item 20", "Candidates who fail either practical or written must wait at least six (6) months before taking the examinations again."),
+  85: R("3.4.6.1", "The Athlete’s Card is issued for each athlete and is the official document to record the athletes’ declarations, attempts … Each Athlete’s Card contains: name; date of birth; IWF / IOC code; bodyweight category; group, if applicable; Entry Total; start number, assigned at the completion of weigh-in."),
+  86: R("7.8.5", "Technical Controller duties: Before the start of competition, inspects the team members’ accreditation and warm-up area passes, athlete outfits and enforces relevant IWF TCRR, when necessary."),
+  87: R("3.1.2.2 a", "Centre Referee must be seated four hundred (400) cm (measured from the front) of the competition platform to the back edge of the Centre Referee’s Table, and in line with the centre of the competition platform."),
+  88: R("7.7.4", "During the competition, the Referees ensure: … that only the athlete or the Loaders move the barbell to a new position on the competition platform. It is forbidden for a Team Official to move, adjust or clean the barbell."),
+  89: R("7.7.9", "When no Referee Light System is available, the Centre Referee gives the “Down” signal and the Referees give their decision by means of small red and white flags."),
+  90: R("7.7.4", "If the athlete, during the execution of the lift moves to a position where the view of the Referee is impaired, the Referee concerned may move to a position where the lift can be observed correctly."),
+  91: R("7.5.8 / 7.1", "Jury members must not influence or attempt to influence the decision of the other Jury members. … A Technical Official acts as an impartial judge of sporting competition.", "none",
+    "The 2026 rulebook has no rule that says this word for word about Referees. The nearest are the matching Jury rule (7.5.8) and the duty to act impartially (7.1)."),
+  92: R("Regulation to 6.4, item 19", "Numbered warm-up platforms are allocated by the Competition Secretary at the end of the weigh-in in accordance with the athlete start number.", "match", "Platforms are allocated by start number, not chosen by lot number."),
+  93: R("Regulation to 7.3, item 11", "Candidates must referee at least one hundred (100) attempts, including both completed and uncompleted attempts."),
+  94: R("7.3.6 c", "For an International Technical Official Category 2 to be promoted to Category 1 … must obtain 95% or more in the practical exam."),
+  95: R("7.7.9", "Should one (1) of the Side Referees see a serious fault during the execution of a lift, he / she raises the red flag to call attention to the fault."),
+  96: R("Regulation to 6.6.5, item 6", "If the athlete / Team Official does not make the necessary change for the first Clean & Jerk and refuses to do so, the athlete is eliminated from the competition immediately upon refusal."),
+  97: R("Regulation to 7.9, item 5", "The Marshals’ Table must be open thirty (30) minutes prior to the start of introduction of athletes."),
+  98: R("6.6.13", "When the Team Official / athlete asks for a change of weight and still has to take the heavier weight next, the clock is stopped while the weight is changed. After the change of weight has been completed, the clock continues to run."),
+  99: R("7.10.5", "The Timekeeper stops the timing clock immediately as the barbell is raised from the competition platform."),
+  100: R("6.8.2", "Snatch and Clean & Jerk: best result – highest first; if identical, the Athlete who achieved the result earliest according to the Calling Order 6.6.6. Total: best result; if identical, the Athlete who achieved the Total result earliest. In the case of tie(s) in different group(s), the athlete(s) who competed earlier in time will be ranked higher regardless the attempt number."),
+  101: R("8.1 / 8.11", "A record is a lift that exceeds the previous record by a minimum of one (1) kg. … If two (2) or more athletes achieve the same result and a new record is established, the new record holder is the athlete who completed the lift first regardless of the sequence of the competition, if divided into groups.")
+};
+const BADGE = { match: "Matches 2026 rule", note: "Same answer, 2026 wording changed", differs: "2026 rule differs from this answer key", none: "No direct 2026 rule" };
+
 const TOTAL_POINTS = QUESTIONS.reduce((s, q) => s + (q.pts || 1), 0); // 115
 
 // ---------- State ----------
@@ -725,6 +854,11 @@ function refreshCard(n) {
   const label = cls === "ok" ? "Good lift." : cls === "part" ? `Part marks: ${g.score} of ${g.pts}.` : (isAnswered(q) ? "No lift." : "Not answered.");
   fb.append(el("strong", { text: label + (q.pts > 1 && cls !== "part" ? ` ${g.score} of ${g.pts} points.` : "") }));
   if (cls !== "ok") fb.append(el("span", { class: "ans", text: "Correct answer: " + answerText(q) }));
+  const r = RULES[n];
+  if (r) fb.append(el("div", { class: "rule " + r.s },
+    el("div", { class: "rh" }, el("span", { class: "ref", text: "TCRR 2026 · " + r.ref }), el("span", { class: "badge", text: BADGE[r.s] })),
+    el("blockquote", { text: r.q }),
+    r.note ? el("p", { class: "rnote", text: r.note }) : null));
   // per-field marks
   if (q.type === "mc" || q.type === "tf") {
     const right = q.type === "mc" ? q.ans : String(q.ans);
@@ -770,7 +904,8 @@ function renderResult() {
     el("div", { style: "display:flex;gap:16px;align-items:center;flex-wrap:wrap" }, el("span", { class: "big", text: pct + "%" }), lights),
     el("p", { text: `${got} of ${TOTAL_POINTS} points · ${full} of ${QUESTIONS.length} questions with full marks.` }),
     el("p", { class: "note", text: missed.length ? "Missed or part marks: " + missed.map(n => "Q." + n).join(", ") : "No missed questions." }),
-    el("p", { class: "note", text: "Percentage = your points ÷ 115 × 100, as on the official answer sheet. The lights are a study guide only, not an official pass mark." }));
+    el("p", { class: "note", text: "Percentage = your points ÷ 115 × 100, as on the official answer sheet. Under TCRR 2026 rule 7.3.5 f, Category 2 needs 85% or more on the written exam; under 7.3.6 d, Category 1 needs 90% or more. The lights are a study guide only." }),
+    el("p", { class: "note", text: "Where the 2026 rulebook gives a different answer: " + Object.keys(RULES).filter(k => RULES[k].s === "differs").map(k => "Q." + k).join(", ") + ". These are still marked against the 2025 key." }));
   box.hidden = false;
 }
 
@@ -779,8 +914,8 @@ function applyMode() {
   $("#m-exam").setAttribute("aria-pressed", String(state.mode === "exam"));
   $("#b-submit").textContent = state.mode === "exam" ? "Submit exam" : "Check all answers";
   $("#mode-help").textContent = state.mode === "practice"
-    ? "Practice mode: answer at your own pace and press “Check answer” on any question to see if it’s right. Your answers are kept in this browser."
-    : "Exam mode: no feedback until you submit. Answer all 101 questions (115 points), then press “Submit exam” to see your score and the correct answers.";
+    ? "Practice mode: answer at your own pace and press “Check answer” on any question to see if it’s right, with the IWF TCRR 2026 rule behind it. Your answers are kept in this browser."
+    : "Exam mode: no feedback until you submit. Answer all 101 questions (115 points), then press “Submit exam” to see your score, the correct answers and the IWF TCRR 2026 rule for each.";
   QUESTIONS.forEach(q => refreshCard(q.n));
   updateBoard();
 }
