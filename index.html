@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important} body{margin:0}</style>
+</head>
+<body>
+<title>IWF TO Exam 2025</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky scoreboard header, jump grid of 101 questions, then a single column of question cards — read like the exam paper, graded like a referee panel. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --sunk: #e9edf3;
+  --fg: #141d33;
+  --muted: #5a6478;
+  --line: #d4dae4;
+  --accent: #1d3f8f;        /* officials' navy */
+  --accent-fg: #ffffff;
+  --good: #1f7a46;
+  --good-bg: #e3f3e9;
+  --bad: #b3261e;
+  --bad-bg: #fbe7e5;
+  --part: #946200;
+  --part-bg: #fbf0d9;
+  --focus: #2f6bff;
+  --disc-red: #d32f2f; --disc-blue: #1e5bc6; --disc-yellow: #f2c400; --disc-green: #2e8b3e; --disc-white: #f4f4f4; --disc-black: #1b1b1b;
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1422; --surface: #161e30; --sunk: #1d2840; --fg: #e6ebf5; --muted: #9aa5bd; --line: #2b3754;
+    --accent: #8fb0ff; --accent-fg: #0e1422;
+    --good: #6fd39a; --good-bg: #13301f; --bad: #ff8a80; --bad-bg: #3a1714; --part: #f0c060; --part-bg: #352a10; --focus: #8fb0ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1422; --surface: #161e30; --sunk: #1d2840; --fg: #e6ebf5; --muted: #9aa5bd; --line: #2b3754;
+  --accent: #8fb0ff; --accent-fg: #0e1422;
+  --good: #6fd39a; --good-bg: #13301f; --bad: #ff8a80; --bad-bg: #3a1714; --part: #f0c060; --part-bg: #352a10; --focus: #8fb0ff;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 860px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: .01em; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px; }
+.brand { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.brand h1 { font-size: 24px; line-height: 1.05; }
+.brand span { font-size: 12px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 13px; font-weight: 600; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+.board { display: flex; gap: 14px; align-items: baseline; font-variant-numeric: tabular-nums; }
+.board .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; }
+.board .v { font-family: var(--f-display); font-size: 22px; font-weight: 700; }
+.bar { height: 4px; background: var(--sunk); }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+
+/* intro + controls */
+.intro { padding-block: 22px 8px; display: grid; gap: 12px; }
+.intro p { margin: 0; max-width: 65ch; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.small { padding: 4px 10px; font-size: 13px; }
+
+details.jump { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+details.jump summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 4px; padding: 0 14px 14px; }
+.grid a { display: block; text-align: center; font-size: 12px; padding: 5px 0; border-radius: 5px; text-decoration: none; color: var(--fg); background: var(--sunk); font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.grid a.done { border-color: var(--accent); }
+.grid a.ok { background: var(--good-bg); color: var(--good); border-color: var(--good); }
+.grid a.part { background: var(--part-bg); color: var(--part); border-color: var(--part); }
+.grid a.no { background: var(--bad-bg); color: var(--bad); border-color: var(--bad); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 0 14px 12px; font-size: 12px; color: var(--muted); }
+
+/* questions */
+#qs { display: grid; gap: 14px; padding-block: 18px 40px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 12px; scroll-margin-top: 90px; min-width: 0; }
+.q.ok { border-color: var(--good); }
+.q.no { border-color: var(--bad); }
+.q.part { border-color: var(--part); }
+.q[hidden] { display: none !important; }
+.q > *, .body { min-width: 0; }
+.qh { display: flex; gap: 12px; align-items: flex-start; }
+.qn { font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--accent); min-width: 52px; line-height: 1.2; }
+.qt { flex: 1; min-width: 0; }
+.qt .kind { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); display: block; margin-bottom: 2px; }
+.qt p { margin: 0; }
+.pts { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.opts { display: grid; gap: 6px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.opt:hover { background: var(--sunk); }
+.opt input { margin-top: 4px; accent-color: var(--accent); }
+.opt b { font-family: var(--f-mono); font-size: 13px; color: var(--muted); min-width: 1.2em; }
+.opt.correct { border-color: var(--good); background: var(--good-bg); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.tf { display: flex; gap: 8px; flex-wrap: wrap; }
+.tf .opt { flex: 1 1 140px; }
+
+.fields { display: grid; gap: 8px; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr) 120px auto; gap: 10px; align-items: center; }
+.field label { min-width: 0; }
+.field .suf { color: var(--muted); font-size: 13px; }
+input[type="text"], select { width: 100%; padding: 7px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); font-variant-numeric: tabular-nums; }
+input.okf, select.okf { border-color: var(--good); background: var(--good-bg); }
+input.nof, select.nof { border-color: var(--bad); background: var(--bad-bg); }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.col h3 { font-size: 16px; margin-bottom: 6px; }
+.col ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; counter-reset: c; }
+.col li { display: grid; grid-template-columns: 22px minmax(0, 1fr) 24px; gap: 6px; align-items: center; counter-increment: c; }
+.col li::before { content: counter(c) "."; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.col li span { color: var(--muted); font-size: 13px; }
+.discs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.disc { display: grid; grid-template-columns: 34px 52px minmax(0, 1fr); align-items: center; gap: 8px; }
+.disc .dot { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--line); background: var(--sunk); position: relative; }
+.disc .dot::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--surface); }
+.disc .w { font-family: var(--f-mono); font-size: 13px; }
+
+.fb { font-size: 14px; border-radius: 8px; padding: 9px 12px; display: none; }
+.fb.show { display: block; }
+.fb.ok { background: var(--good-bg); color: var(--good); }
+.fb.no { background: var(--bad-bg); color: var(--bad); }
+.fb.part { background: var(--part-bg); color: var(--part); }
+.fb .ans { color: var(--fg); display: block; margin-top: 2px; }
+.qfoot { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* protocol */
+.ptabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table.proto { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 13px; font-variant-numeric: tabular-nums; }
+table.proto th, table.proto td { border: 1px solid var(--line); padding: 4px 6px; text-align: center; }
+table.proto th { background: var(--sunk); font-weight: 600; font-size: 12px; }
+table.proto td.x { color: var(--bad); }
+table.proto td.x::before { content: "X "; font-weight: 700; }
+table.proto td.grp { text-align: left; font-family: var(--f-display); font-size: 16px; font-weight: 700; background: var(--surface); border-left: 0; border-right: 0; padding-top: 10px; }
+table.proto td.grp small { font-family: var(--f-body); font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 10px; }
+table.proto td.best { font-weight: 600; }
+table.proto input { width: 44px; padding: 3px 4px; text-align: center; }
+.wr { font-size: 14px; color: var(--muted); }
+.wr b { color: var(--fg); font-family: var(--f-mono); font-weight: 500; }
+.wrsel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.wrsel label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+
+.result { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 10px; }
+.result[hidden] { display: none !important; }
+.result .big { font-family: var(--f-display); font-size: 44px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.lights { display: flex; gap: 10px; }
+.lights i { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); }
+.lights i.w { background: #fafafa; box-shadow: 0 0 10px rgba(255,255,255,.6); }
+.lights i.r { background: #e53935; box-shadow: 0 0 10px rgba(229,57,53,.5); }
+.note { font-size: 13px; color: var(--muted); }
+
+@media (max-width: 560px) {
+  .field { grid-template-columns: minmax(0, 1fr) 90px; }
+  .field .suf { display: none; }
+  .cols { grid-template-columns: 1fr; }
+  .wrsel { grid-template-columns: 1fr; }
+  .qn { min-width: 40px; font-size: 18px; }
+  .board .v { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } html { scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span>IWF Technical Officials</span><h1>Examination 2025</h1></div>
+    <div class="seg" role="group" aria-label="Mode">
+      <button id="m-practice" type="button" aria-pressed="true">Practice</button>
+      <button id="m-exam" type="button" aria-pressed="false">Exam</button>
+    </div>
+    <div class="board">
+      <div><span class="k">Answered</span><span class="v" id="s-ans">0/101</span></div>
+      <div><span class="k">Points</span><span class="v" id="s-pts">–</span></div>
+    </div>
+  </div>
+  <div class="bar"><i id="s-bar"></i></div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <p id="mode-help"></p>
+    <div class="actions">
+      <button class="btn primary" id="b-submit" type="button">Check all answers</button>
+      <button class="btn" id="b-wrong" type="button" disabled>Show only missed</button>
+      <button class="btn" id="b-all" type="button" hidden>Show all questions</button>
+      <button class="btn" id="b-retry" type="button" disabled>Clear missed answers</button>
+      <button class="btn" id="b-reset" type="button">Start over</button>
+    </div>
+    <div class="result" id="result" hidden></div>
+    <details class="jump">
+      <summary>Jump to a question</summary>
+      <div class="legend"><span>Outlined = answered</span><span>Green = full marks</span><span>Amber = part marks</span><span>Red = no marks</span></div>
+      <nav class="grid" id="grid" aria-label="Questions"></nav>
+    </details>
+  </section>
+  <section id="qs" aria-label="Questions"></section>
+</main>
+
+<script>
+(() => {
+"use strict";
+// ---------- Question bank (IWF TO Examination 2025) ----------
+const mc = (n, text, a, b, c, ans) => ({ n, type: "mc", text, opts: { a, b, c }, ans });
+const tf = (n, text, ans) => ({ n, type: "tf", text, ans });
+const MEN_JS = ["60","65","71","79","88","94","110","+110"], MEN_Y = ["56","60","65","71","79","88","94","+94"];
+const WOM_JS = ["48","53","58","63","69","77","86","+86"], WOM_Y = ["44","48","53","58","63","69","77","+77"];
+const COLORS = ["Red","Blue","Yellow","Green","White","Black"];
+
+const QUESTIONS = [
+  mc(1, "Bending or extending the arms during the recovery phase is:",
+    "allowed if already reported to all on duty Referees and the Jury", "an incorrect movement", "allowed if already reported to the on duty Technical Controller", "b"),
+  tf(2, "In classification of athletes in Total, when two athletes record the same Total, the athlete with the lighter bodyweight wins?", false),
+  mc(3, "When do the Referees give the \"Down\" signal?",
+    "2 seconds after the athlete becomes motionless in all parts of the body", "1 second after the athlete becomes motionless in all parts of the body", "As soon as the athlete becomes motionless in all parts of the body", "c"),
+  tf(4, "The technique known as “hooking” is permitted during the Clean & Jerk only?", false),
+  mc(5, "What is the correct rule?",
+    "If an athlete lifts the barbell 5cm off the platform and replaces it on the platform with 30 seconds remaining on the clock; he/she cannot try the lift again.",
+    "If an athlete lifts the barbell off the platform and replaces it on the platform, he/she can try the lift again unless the barbell has reached the height of the knees.",
+    "If an athlete lifts the barbell approximately 10cm from the platform and replaces it on the platform with 15 seconds remaining on the clock, he/she cannot try the lift again.", "b"),
+  mc(6, "After the Referees’ signal to lower the barbell; the athlete may release the grip on the bar when:",
+    "the bar has passed the level of the knees", "the bar has passed the level of the shoulders", "the bar has passed the level of the waist", "b"),
+  mc(7, "A pause during the extension of the arms is:", "allowed", "an incorrect movement", "permitted during the execution of the Jerk", "b"),
+  { n: 8, type: "fields", pts: 2, text: "List the minimum age to compete in the following competitions:", fields: [
+    { label: "World Senior Championships", suf: "years of age", ans: 15 },
+    { label: "World Junior Championships", suf: "years of age", ans: 15 },
+    { label: "World Youth Championships", suf: "years of age", ans: 13 } ] },
+  tf(9, "Athletes must be weighed in the weightlifting costumes that they will compete in.", true),
+  mc(10, "“Pulling from the hang” means:",
+    "stopping the upward movement of the barbell during the pull and is permitted", "accelerating the upward movement of the barbell during the pull and is permitted",
+    "stopping the upward movement of the barbell during the pull and is an incorrect movement", "c"),
+  { n: 11, type: "list", pts: 4, text: "List the 8 bodyweight categories for Men (Junior / Senior and Youth).",
+    cols: [{ label: "Junior / Senior", ans: MEN_JS }, { label: "Youth", ans: MEN_Y }] },
+  { n: 12, type: "list", pts: 4, text: "List the 8 bodyweight categories for Women (Junior / Senior and Youth).",
+    cols: [{ label: "Junior / Senior", ans: WOM_JS }, { label: "Youth", ans: WOM_Y }] },
+  mc(13, "Choose the correct rule:", "Touching the barbell with his / her footwear is an incorrect movement", "Touching the barbell with his / her footwear is allowed", "Touching the barbell with his / her footwear is allowed before the Clean", "a"),
+  mc(14, "Touching the platform with:", "one knee is a correct movement", "the knees during the Clean is a correct movement", "any part of the body other than the feet is an incorrect movement", "c"),
+  tf(15, "It is an incomplete movement when an athlete fails to fully extend their knees at the completion of the Clean and before starting the Jerk?", true),
+  mc(16, "An attempt is valid when during the execution of a lift, the athlete comes near the edge of the platform and:",
+    "touches the area outside the platform with any part of the body.", "their shoes hang over the edge of the platform without touching the outside area.", "touches the outside area with one shoe.", "b"),
+  mc(17, "Finishing with a “press out” means:",
+    "continuing the extension of the arms after the athlete has reached the lowest point of his/her position in the squat or split for both the Snatch and the Jerk and is allowed",
+    "continuing the extension of the arms after the athlete has reached the highest point of his/her position in the squat or split for both the Snatch and the Jerk and is an incorrect movement",
+    "continuing the extension of the arms after the athlete has reached the lowest point of his/her position in the squat or split for both the Snatch and the Jerk and is an incorrect movement", "c"),
+  mc(18, "If an athlete fails to place his/her feet parallel to plane of the trunk, it means:",
+    "it is an incomplete movement and the Referees press the red “Down” button", "it is a complete movement and the Referees press the white “Down” button", "it is an incomplete movement and the Referees don’t press any button", "c"),
+  mc(19, "Failing to replace the complete barbell on the platform after the down signal is:",
+    "an incorrect movement", "a correct movement", "a correct movement if the athlete lowers the barbell in front of the platform", "a"),
+  mc(20, "Choose the correct rule:",
+    "Touching the head with the bar is allowed.",
+    "Touching the head (hair and any items on the head are considered to be part of the head) with the bar is an incorrect movement in the Clean.",
+    "Touching the head (hair and any items on the head are not considered to be part of the head) with the bar is an incorrect movement in the Jerk.", "a"),
+  tf(21, "When snatching or cleaning in the squat style, athletes may not assist their recovery by swinging or rocking their body while in the squat position.", false),
+  mc(22, "What is the correct rule?",
+    "Touching the thighs or the knees with the elbows or the upper arms is an incorrect movement.",
+    "Touching the thighs or the knees with the elbows is incorrect but it is correct to touch with the upper arms.",
+    "Touching the thighs or the knees with the upper arm is incorrect but it is correct to touch with the elbows.", "a"),
+  mc(23, "The terms “double clean” and “dirty clean” mean:",
+    "Resting or placing the barbell on the chest at an intermediate point before its final position and is a correct movement",
+    "Resting or placing the barbell on the chest at an intermediate point before its final position and is an incorrect movement",
+    "Resting or placing the barbell on the chest at an intermediate point before its final position and is a correct movement as long as it is reported/displayed to the on duty Referees prior to the lift", "b"),
+  mc(24, "How many athletes per Member Federation can be entered in one bodyweight category?", "2", "1", "3", "a"),
+  mc(25, "Before starting the:",
+    "Jerk, any deliberate oscillation of the barbell to gain advantage is forbidden. The athlete must become motionless.",
+    "Jerk, any deliberate oscillation of the barbell to gain advantage is forbidden. The athlete and the barbell must become motionless.",
+    "Snatch, any deliberate oscillation of the barbell to gain advantage is forbidden.", "a"),
+  tf(26, "An athlete cannot change the width of their grip during the lift?", false),
+  { n: 27, type: "fields", pts: 2, text: "What are the specifications for competition platforms used at IWF Events?", fields: [
+    { label: "Width", suf: "cm", ans: 400 }, { label: "Length", suf: "cm", ans: 400 }, { label: "Height", suf: "cm", ans: 10 } ] },
+  { n: 28, type: "fields", pts: 2, text: "How much do the following pieces of equipment weigh?", fields: [
+    { label: "Men's bar", suf: "kg", ans: 20 }, { label: "Women's bar", suf: "kg", ans: 15 }, { label: "1 Collar", suf: "kg", ans: 2.5 } ] },
+  mc(29, "The diameter of the grip section on the Women's bar is:", "2.8 cm", "3.0 cm", "2.5 cm", "c"),
+  mc(30, "What is the width of training/warm-up platform?", "300 cm", "400 cm", "250 cm", "a"),
+  { n: 31, type: "colors", pts: 2, text: "List the colour of discs:", fields: [
+    ["25kg","Red"],["20kg","Blue"],["15kg","Yellow"],["10kg","Green"],["5kg","White"],
+    ["2.5kg","Red"],["2kg","Blue"],["1.5kg","Yellow"],["1kg","Green"],["0.5kg","White"]].map(([label, ans]) => ({ label, ans })) },
+  mc(32, "The apparatus that provides the visual and audible \"Down\" signal is:",
+    "located in the warm-up area", "located on the left side of the competition platform/stage", "placed on a stand in front of the competition platform/stage", "c"),
+  mc(33, "To operate the visual and audible \"Down\" signal:",
+    "one of the three Referees must give his/her decision of either \"Good Lift\" or \"No Lift\"",
+    "two of the three Referees must give an identical decision of either \"Good Lift\" or \"No Lift\"",
+    "three Referees must give an identical decision of either \"Good Lift\" or \"No Lift\"", "b"),
+  mc(34, "After the visible and audible \"Down\" signal and before the decision lights operate:",
+    "the Referees have 2 seconds to reverse their decision", "the Referees cannot reverse their decision", "the Referees have 3 seconds to reverse their decision", "c"),
+  tf(35, "Athlete bibs are worn for athlete identification during competition and are demarcated with the athlete’s start number?", true),
+  mc(36, "If a Referee sees a mistake during the execution of a lift, he/she must:", "immediately press the red button", "immediately press the white button", "raise his/her hand and say \"Down\"", "a"),
+  mc(37, "At the weigh-in, what is the correct rule?",
+    "250 grams must be deducted from the weight shown on the scales to allow for the weight of the costume for all athletes who weigh heavier than their entered category.",
+    "250 grams must be deducted from the weight shown on the scales to allow for the weight of the costume for all athletes competing.",
+    "200 grams must be deducted from the weight shown on the scales to allow for the weight of the costume for all athletes competing.", "b"),
+  mc(38, "Which unitard can athletes wear?",
+    "one piece, loose fitting, collarless, black, no design and no pattern", "two pieces, tight fitting, collarless, any colour, no design and no pattern", "one piece, tight fitting, with collar, black, no design and no pattern", "b"),
+  mc(39, "What is the correct rule?", "unitard can be worn over the costume", "a pair of shorts may be worn under the costume", "it is permitted to wear two-piece costume", "b"),
+  mc(40, "The maximum width of an athlete’s belt is:", "10 cm", "12 cm", "14 cm", "b"),
+  mc(41, "Any apparent effort of performing the Jerk that is not completed (i.e. lowering the body; bending the knees) is:",
+    "an incorrect movement", "a correct movement", "a correct movement if the athlete tries to lower their body or bend their knees only once", "a"),
+  mc(42, "What is the correct rule?",
+    "It is permitted to wear sticking plasters which protrude in front of the fingertips.", "Any bandage worn on the trunk must be worn under the costume.",
+    "No tape or substitutes are allowed within eight (8) cm of the elbow area. The eight (8) cm area consists of four (4) cm above and four (4) cm below the elbow.", "b"),
+  tf(43, "The use of chalk (magnesium carbonate) is permitted?", true),
+  mc(44, "The diameter of the largest disc is:", "46 cm", "45 cm", "40 cm", "b"),
+  mc(45, "Choose the correct rule:",
+    "There can be a connection between a wrist bandage and an elbow bandage.", "There can be a connection between a wrist bandage and a hand bandage.", "There cannot be any connection between a wrist bandage and a hand bandage.", "b"),
+  mc(46, "Choose the correct rule:", "No bandages or substitutes are allowed on the elbow(s).", "No bandages or substitutes are allowed on the thigh(s).", "No bandages are allowed to be worn on the unitard.", "a"),
+  tf(47, "Sticking plasters worn on the fingers may protrude beyond the fingertips.", false),
+  mc(48, "The weigh-in begins:", "2 hours and 15 minutes before the start of competition", "1 hour and 45 minutes before the start of competition", "2 hours before the start of competition", "c"),
+  mc(49, "If an athlete cannot fully extend his/her elbow(s) the athlete:",
+    "is allowed to compete if the athlete displays/reports that they cannot fully extend their elbow(s) to the Referees and the Jury prior to start of competition",
+    "is not allowed to compete and must withdraw from the competition", "is allowed to compete only if he/she brings a Doctor’s certificate", "a"),
+  mc(50, "Choose the correct rule:",
+    "Two Referees verify the bodyweight and the Competition Secretary records the information.",
+    "The Centre Referee operates the scale and the other two Referees verify the bodyweight which the Competition Secretary records.",
+    "All three Referees must operate the scale and verify the bodyweight and the Competition Secretary records the information.", "a"),
+  mc(51, "During the allocated weigh-in time:",
+    "athletes who are under or over the limits of the bodyweight category may return two times to make weight",
+    "athletes who are under or over the limits of the bodyweight category may return as many times as required to make weight",
+    "athletes who are under or over the limits of the bodyweight category may return three times to make weight", "b"),
+  mc(52, "As soon as the athlete has weighed within the officially entered bodyweight category, accompanying Team Officials must be provided with Warm-up Passes for access to the warm-up area and Challenge cards as per the following:",
+    "one athlete – three Passes, one Challenge card; two athletes – four Passes, two Challenge cards; any additional athlete (combined categories/Events) – two Passes per athlete, one Challenge card per athlete",
+    "one athlete – three Passes, one Challenge card; two athletes – three Passes, two Challenge cards; any additional athlete (combined categories/Events) – two Passes per athlete, one Challenge card per athlete",
+    "one athlete – three Passes, one Challenge card; two athletes – four Passes, two Challenge cards; any additional athlete (combined categories/Events) – one Pass per athlete, one Challenge card per athlete", "a"),
+  mc(53, "The Introduction of athletes begins:", "1 hour and 45 minutes after the beginning of the weigh-in", "2 hours after the beginning of the weigh-in", "2 hours and 15 minutes after the beginning of the weigh-in", "b"),
+  tf(54, "The maximum width of skin that can be covered by a bandage on the wrist is 10 cm.", false),
+  mc(55, "What is the correct rule?",
+    "The total weight of the starting attempts declared and actually taken in the Snatch and the Clean & Jerk must equal or exceed the weight of the verified Entry Total minus 20kg.",
+    "The total weight of the starting attempts declared in the Snatch and the Clean & Jerk must equal 20kg below the announced Entry Total for the Men’s and Women’s competition.",
+    "The total weight of the starting attempts declared and actually taken in the Snatch and the Clean & Jerk cannot be less than 20kg below the announced Entry Total for the Men’s competition, and less than 15kg below the announced Entry Total for the Women’s competition.", "a"),
+  mc(56, "Choose the correct starting attempt for the following scenario in the 60kg category with an Entry Total of 200kg; Snatch Results = 1st attempt 80kg (Good Lift); 2nd attempt 83kg (Good Lift); 3rd attempt 85kg (Good Lift):",
+    "the athlete must start with at least 90kg in the Clean & Jerk", "the athlete must start with at least 95kg in the Clean & Jerk", "the athlete must start with at least 100kg in the Clean & Jerk", "c"),
+  mc(57, "When an athlete wishes to change the weight originally selected, the Team Official / athlete must:",
+    "notify the Chief Marshal by signing the Athlete’s Card before the final call.", "notify the Chief Marshal by signing the Athlete’s Card for the first attempt only.", "notify the Chief Marshal verbally within 10 seconds before the final call.", "a"),
+  mc(58, "When an athlete wishes to increase the weight which he/she was automatically given by the competition management system, the athlete or Team Official must notify the Chief Marshal:",
+    "within the first 30 seconds of the call. This is the same for both the 1-minute and 2-minute clock.", "before the final call. This is the same for both the 1-minute and 2-minute clock.",
+    "before the final call for the 1-minute clock and 30 seconds before the final call for the 2-minute clock", "a"),
+  mc(59, "The minimum increase between the first and second attempt is:", "1 kg", "2.5 kg", "2 kg", "a"),
+  mc(60, "The weigh-in lasts:", "1 hour", "2 hours", "2 hours and 15 minutes", "a"),
+  mc(61, "Assuming it is the athlete’s first attempt, what is the correct rule?",
+    "One and a half minutes (90 seconds) is allocated to each athlete between the calling of his/her name and the beginning of the attempt.",
+    "One minute (60 seconds) is allocated to each athlete between the calling of his/her name and the beginning of the attempt.",
+    "Two minutes (120 seconds) is allocated to each athlete between the calling of his/her name and the beginning of the attempt.", "b"),
+  mc(62, "Choose the correct rule:",
+    "Athletes or Team Officials cannot change their decision to withdraw from competition once it has been officially announced.",
+    "Athletes or Team Officials cannot change their decision to withdraw from competition once the Athlete’s Card has been signed.",
+    "Athletes or Team Officials can change their decision to withdraw from competition within the first 30 seconds.", "b"),
+  mc(63, "When an athlete attempts two lifts in succession, he/she is allocated:", "1 minute", "2 minutes", "3 minutes", "b"),
+  mc(64, "When an athlete is called but fails to appear on the platform within his/her allocated time the:", "Referees must tell the Jury", "Timekeeper must stop the clock", "Referees must give \"No Lift\"", "c"),
+  mc(65, "Before the first attempt or between two attempts:",
+    "1 change of weight is allowed, excluding the automatic increment", "2 changes of weight are allowed, excluding the automatic increment", "3 changes of weight are allowed, excluding the automatic increment", "b"),
+  mc(66, "What is the correct rule?",
+    "Athletes or Team Officials cannot decrease the weight of the barbell once the announced weight is loaded.",
+    "Athletes or Team Officials cannot decrease the weight of the barbell once the announced weight is loaded and the clock has started.",
+    "Athletes or Team Officials can decrease the weight of the barbell within the first 30 seconds.", "b"),
+  mc(67, "An athlete who is too heavy at weigh-in:", "may compete in the next higher category", "is not allowed to be weighed again", "cannot compete in the next higher category", "c"),
+  mc(68, "There are 4 factors to take in consideration in the order of calling the athletes:",
+    "weight of the barbell (lightest weight first); number of the attempt (lowest number first); sequence/order of the previous attempt(s) (the athlete who lifted latest is first); start number of the athlete (lowest first)",
+    "weight of the barbell (lightest weight first); number of the attempt (lowest number first); sequence/order of the previous attempt(s) (the athlete who lifted earliest is first); start number of the athlete (lowest first)",
+    "weight of the barbell (lightest weight first); number of the attempt (lowest number first); sequence/order of the previous attempt(s) (the athlete who lifted earliest is first); start number of the athlete (highest first)", "b"),
+  mc(69, "After the Snatch competition there is a:",
+    "10 minute break to allow the athletes to warm up for the Clean & Jerk", "15 minute break to allow the athletes to warm up for the Clean & Jerk unless otherwise stated by President of the Jury",
+    "10 minute break to allow the athletes to warm up for the Clean & Jerk but 15 minutes if there are 5 or less athletes", "a"),
+  mc(70, "In very hot weather:", "the President of the Jury decides if the Referees can remove their jacket", "the Technical Controller decides if the Referees can remove their jacket", "it is not allowed to work without a jacket", "a"),
+  mc(71, "What is the correct rule?",
+    "Zero in the Snatch at the Olympic Games does not eliminate an athlete from the competition; he/she is allowed to continue in the Clean & Jerk.",
+    "Zero in the Snatch at the Olympic Games eliminates an athlete from the competition; he/she is not allowed to continue in the Clean & Jerk.",
+    "Zero in the Snatch at the World Championships eliminates an athlete from the competition.", "b"),
+  mc(72, "The athletes are called to the weigh-in room according to:", "their best result", "the progression of their lot number", "the time of their arrival at the weigh-in room", "b"),
+  tf(73, "If a lift is failed because the platform is damaged or the barbell becomes disarranged during the lift; or there is an incursion or any other external interference, the Referee(s) must grant an additional attempt for the affected athlete.", false),
+  { n: 74, type: "text", text: "Who ensures the sport equipment and the field of play are compliant to IWF rules and regulations?", ans: "Technical Controller", accept: ["technical controller","tc","technical controllers"] },
+  mc(75, "Technical Officials must wear the official IWF uniform consisting of:",
+    "blue jacket, white shirt, IWF tie/scarf, beige trousers/skirt and the IWF TO metal badge, pinned on the left lapel of the jacket, IWF TO badge sewn on the left breast pocket",
+    "navy blue jacket, white shirt, IWF tie/scarf, navy blue trousers/skirt and the IWF NOC metal badge, pinned on the left lapel of the jacket, NOC badge sewn on the left breast pocket",
+    "navy blue jacket, white shirt, IWF tie/scarf, navy blue trousers/skirt and the IWF TO metal badge, pinned on the left lapel of the jacket, IWF TO badge sewn on the left breast pocket", "c"),
+  mc(76, "Who can call the Referees to the Jury table?",
+    "The President of the Jury cannot call the Referees to the Jury table", "The General Secretary of the IWF can call one of the Referees to the Jury table", "The President of the Jury can call any of the Referees to the Jury table", "c"),
+  { n: 77, type: "text", text: "Who ensures the technical and competition rules and regulations are being correctly followed and applied?", ans: "Jury", accept: ["jury","competition jury","jury members"] },
+  mc(78, "What is the correct rule?",
+    "Side Referees must be seated on the same line as and parallel with the Centre Referee two hundred to three hundred (200-300) cm from the Centre Referee.",
+    "Side Referees must be seated on the same line as and parallel with the Centre Referee three hundred to four hundred (300-400) cm from the Centre Referee.",
+    "Side Referees must be seated on the same line as and parallel with the Centre Referee four hundred to five hundred (400-500) cm from the Centre Referee.", "b"),
+  mc(79, "What is the correct rule?",
+    "All members of a Jury must be International Category 1 Technical Officials.", "Some of the Jury members may be International Category 1 Technical Officials, the others may be Category 2.",
+    "All members of a Jury must be International Technical Officials.", "a"),
+  mc(80, "During the weigh-in athletes are:",
+    "entitled to wear jewelry, hair adornments and religious head gear but must not wear watches.", "not entitled to wear jewelry, watches, hair adornments and religious head gear.",
+    "entitled to religious head gear but cannot wear jewelry, watches and/or hair adornments.", "a"),
+  mc(81, "A mistake in refereeing can be made involuntarily; in this case:",
+    "the Referee is allowed to explain his/her decision", "the Jury can replace the Referee immediately", "the Competition Director can change the decision of the Referee", "a"),
+  mc(82, "During the course of the competition and after a first warning:",
+    "the Jury cannot replace any Referee whose decisions prove him/her to be incompetent", "the President of the Jury may replace any Referee whose decisions prove him/her to be incompetent",
+    "the Jury, by unanimous vote, can replace any Referee whose decisions prove him/her to be incompetent", "c"),
+  mc(83, "Choose the correct rule for a 5 member Jury:",
+    "The Jury cannot change a decision of the Referees.", "The Jury can change a decision of the Referees when that decision has been judged on majority by the Jury to be technically incorrect.",
+    "The Jury has the power to reverse a decision when the Referees’ decision has been judged unanimously by the Jury to be technically incorrect.", "b"),
+  mc(84, "Technical Officials who fail the practical and written examination must wait:", "2 years before taking the examination again", "1 year before taking the examination again", "6 months before taking the examination again", "c"),
+  mc(85, "What is an Athlete’s Card?",
+    "An official document issued for each athlete to record the athletes’ declarations and attempts and contains no other information.",
+    "An official document issued for each athlete to record the athletes’ declarations/attempts and the athletes’ name; date of birth; IWF/IOC code; bodyweight category; group (if applicable); Entry Total, and; start number (if assigned at the completion of weigh-in).",
+    "An official document issued for each athlete as proof of athlete membership to the IWF and signed by the IWF President.", "b"),
+  { n: 86, type: "text", text: "Who ensures that all athletes are wearing the correct outfit?", ans: "Technical Controller", accept: ["technical controller","tc","technical controllers"] },
+  mc(87, "The Centre Referee is seated:", "600 cm from the front of the platform", "500 cm from the middle of the platform", "400 cm from the front of the platform", "c"),
+  mc(88, "During the competition, who can move the barbell on the platform?",
+    "Only the Team Official or loaders can move the barbell to a new position on the platform.", "Only the Centre Referee can move the barbell to a new position on the platform.",
+    "Only the athlete and loaders can move the barbell to a new position on the platform.", "c"),
+  mc(89, "In the event of a failure of the Referee Light System:", "the lights may be substituted by small red or white flags", "the lights may be substituted by small red or green flags", "the competition must be stopped until the lights are fixed", "a"),
+  tf(90, "If an athlete, during the execution of the lift moves to a position where the view of the Referee is impaired, the Referee(s) cannot move to a position to observe the lift correctly.", false),
+  mc(91, "During the course of the competition, a Referee must:", "attempt to be in accord with the decisions of the other Referees", "not attempt to influence the decisions of the other Referees", "attempt to be in accord with the President of the Jury", "b"),
+  tf(92, "Athletes may use any warm-up platform he/she wants. The order of the priority to choose the warm-up platform is according to the lot number (lowest number first).", false),
+  mc(93, "Which is correct?",
+    "During the practical examination, Technical Officials must referee at least 200 attempts; including uncompleted and completed attempts.",
+    "During the practical examination, Technical Officials must referee at least 100 attempts; including uncompleted and completed attempts.",
+    "During the practical examination, Technical Officials must referee at least 100 attempts plus uncompleted attempts.", "b"),
+  mc(94, "The results of the Technical Officials practical examination are calculated from the completed attempts. Category 1 Technical Officials must achieve a minimum result of:", "97%", "95%", "90%", "b"),
+  mc(95, "When the Referee Light System is not used and if the Side Referee sees a serious fault during the execution of a lift, the:",
+    "Referee must raise the red flag to call attention to the fault", "President of the Jury stops the lift", "Referee can stop the lift", "a"),
+  mc(96, "If the starting weight of the Clean & Jerk does not respect the 20kg Rule and the athlete/Team Official refuses to increase the weight:",
+    "the first attempt of the Clean & Jerk becomes No Lift.", "the athlete will be granted an additional attempt.", "the athlete is eliminated from the competition.", "c"),
+  mc(97, "The Marshals’ Table must be open:", "ten (10) minutes prior to the start of introduction of athletes", "twenty (20) minutes prior to the start of introduction of athletes", "thirty (30) minutes prior to the start of introduction of athletes", "c"),
+  mc(98, "When an athlete or Team Official asks for a change of weight and still has to take the next weight:",
+    "the timing clock remains running while the weight is changed",
+    "the clock is stopped while the weight is changed and after the change has been completed, the clock continues to run until the end of the allocated time",
+    "the clock is stopped while the weight is changed and after the change has been completed, the clock is reset to the normal 1 or 2 minute(s)", "b"),
+  mc(99, "When should the Timekeeper stop the timing clock?", "Immediately as the barbell is raised from the platform.", "Immediately as the barbell passed the height of the athletes' knees.", "After the completion of the attempt.", "a"),
+  { n: 100, type: "protocol", pts: 4, text: "Complete one of the three Protocol sheets with the Snatch, Clean & Jerk and Total places." },
+  { n: 101, type: "wr", pts: 2, text: "Using the same Protocol as completed in Q100, who holds the World Record?" }
+];
+
+// Protocols: lift = [kg, good]; places = [S, C&J, Total]
+const L = s => s.split(" ").map(t => t.startsWith("x") ? [+t.slice(1), false] : [+t, true]);
+const PROTOCOLS = [
+  { prev: { S: 137, J: 172, T: 308 }, wr: ["C", "F", "F"], groups: [
+    ["B", "12:00", [
+      [5, "A", L("134 140 x142"), L("160 164 x167"), 140, 164, 304, [2, 6, 6]],
+      [44, "B", L("130 135 138"), L("165 173 x175"), 138, 173, 311, [5, 2, 3]],
+      [99, "C", L("140 x142 x142"), L("165 171 x173"), 140, 171, 311, [1, 3, 2]] ]],
+    ["A", "18:00", [
+      [1, "D", L("134 137 140"), L("x165 165 x166"), 140, 165, 305, [4, 5, 5]],
+      [40, "E", L("140 x142 x142"), L("165 x173 x173"), 140, 165, 305, [3, 4, 4]],
+      [2, "F", L("130 136 138"), L("165 174 x175"), 138, 174, 312, [6, 1, 1]] ]] ] },
+  { prev: { S: 98, J: 119, T: 217 }, wr: ["A", "D", "D"], groups: [
+    ["B", "12:00", [
+      [5, "A", L("97 100 x101"), L("x118 118 120"), 100, 120, 220, [1, 2, 2]],
+      [44, "B", L("x98 98 x100"), L("x115 115 x120"), 98, 115, 213, [5, 4, 5]],
+      [99, "C", L("95 98 100"), L("118 x120 120"), 100, 120, 220, [2, 3, 3]] ]],
+    ["A", "18:00", [
+      [1, "D", L("96 98 100"), L("115 121 x122"), 100, 121, 221, [4, 1, 1]],
+      [40, "E", L("96 100 x102"), L("115 x120 x120"), 100, 115, 215, [3, 5, 4]],
+      [42, "F", L("93 96 98"), L("x115 115 x120"), 98, 115, 213, [6, 6, 6]] ]] ] },
+  { prev: { S: 130, J: 159, T: 286 }, wr: ["C", "B", "D"], groups: [
+    ["B", "12:00", [
+      [5, "A", L("126 128 130"), L("155 159 161"), 130, 161, 291, [5, 2, 4]],
+      [44, "B", L("128 130 x131"), L("158 161 x162"), 130, 161, 291, [4, 1, 3]],
+      [99, "C", L("128 x131 131"), L("154 157 160"), 131, 160, 291, [1, 4, 2]] ]],
+    ["A", "18:00", [
+      [1, "D", L("128 131 x132"), L("158 161 x162"), 131, 161, 292, [2, 3, 1]],
+      [40, "E", L("126 x130 130"), L("155 157 160"), 130, 160, 290, [6, 6, 6]],
+      [42, "F", L("128 131 x132"), L("x160 160 x162"), 131, 160, 291, [3, 5, 5]] ]] ] }
+];
+
+const TOTAL_POINTS = QUESTIONS.reduce((s, q) => s + (q.pts || 1), 0); // 115
+
+// ---------- State ----------
+const KEY = "iwf-to-2025-v1";
+let state = { mode: "practice", ans: {}, checked: {}, submitted: false, protocol: 0 };
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.ans) state = Object.assign(state, s); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+// ---------- Helpers ----------
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v; else if (k === "text") e.textContent = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else if (v !== false && v != null) e.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids) if (k != null) e.append(k);
+  return e;
+};
+const num = v => { const t = String(v ?? "").replace(",", ".").replace(/[^0-9.]/g, ""); return t === "" ? NaN : parseFloat(t); };
+const normCat = v => {
+  let t = String(v ?? "").toLowerCase().replace(/kg/g, "").replace(/\s+/g, "");
+  if (!t) return "";
+  const plus = /^(\+|>|over)/.test(t) || /\+$/.test(t);
+  const n = num(t); if (isNaN(n)) return t;
+  return (plus ? "+" : "") + n;
+};
+const normText = v => String(v ?? "").toLowerCase().replace(/[^a-z ]/g, " ").replace(/\b(the|a|an)\b/g, " ").replace(/\s+/g, " ").trim();
+const scaled = (pts, mistakes) => Math.max(0, pts - mistakes);
+
+// ---------- Grading ----------
+function isAnswered(q) {
+  const a = state.ans[q.n];
+  if (q.type === "mc" || q.type === "tf" || q.type === "text") return a != null && a !== "";
+  if (q.type === "protocol") { const p = state.ans[100]; return !!p && p.p === state.protocol && Object.values(p.v || {}).some(x => x !== ""); }
+  if (q.type === "wr") { const p = state.ans[101]; return !!p && Object.values(p).some(x => x); }
+  return !!a && Object.values(a).some(x => x !== "" && x != null && (!Array.isArray(x) || x.some(y => y !== "")));
+}
+function grade(q) {
+  const a = state.ans[q.n];
+  const pts = q.pts || 1;
+  switch (q.type) {
+    case "mc": return { score: a === q.ans ? 1 : 0, pts };
+    case "tf": return { score: a === String(q.ans) ? 1 : 0, pts };
+    case "text": { const ok = q.accept.includes(normText(a)); return { score: ok ? 1 : 0, pts }; }
+    case "fields": {
+      const marks = q.fields.map((f, i) => num((a || {})[i]) === f.ans);
+      return { score: scaled(pts, marks.filter(m => !m).length), pts, marks };
+    }
+    case "colors": {
+      const marks = q.fields.map((f, i) => (a || {})[i] === f.ans);
+      return { score: scaled(pts, marks.filter(m => !m).length), pts, marks };
+    }
+    case "list": {
+      // Order does not matter within a column; each correct category missing counts as one mistake.
+      let mistakes = 0; const marks = [];
+      q.cols.forEach((c, ci) => {
+        const given = ((a || {})[ci] || []).map(normCat);
+        const want = new Set(c.ans);
+        const seen = new Set();
+        marks[ci] = given.map(g => { const ok = want.has(g) && !seen.has(g); if (ok) seen.add(g); return ok; });
+        mistakes += c.ans.filter(x => !seen.has(x)).length;
+      });
+      return { score: scaled(pts, mistakes), pts, marks };
+    }
+    case "protocol": {
+      const P = PROTOCOLS[state.protocol]; const v = (a && a.p === state.protocol && a.v) || {};
+      let mistakes = 0; const marks = {};
+      P.groups.forEach(g => g[2].forEach(r => r[7].forEach((place, k) => {
+        const id = r[1] + k; const ok = num(v[id]) === place; marks[id] = ok; if (!ok) mistakes++;
+      })));
+      return { score: scaled(pts, mistakes), pts, marks };
+    }
+    case "wr": {
+      const P = PROTOCOLS[state.protocol]; const v = a || {};
+      const marks = P.wr.map((w, k) => v[k] === w);
+      return { score: scaled(pts, marks.filter(m => !m).length), pts, marks };
+    }
+  }
+}
+function answerText(q) {
+  switch (q.type) {
+    case "mc": return `${q.ans} – ${q.opts[q.ans]}`;
+    case "tf": return q.ans ? "True" : "False";
+    case "text": return q.ans;
+    case "fields": return q.fields.map(f => `${f.label}: ${f.ans} ${f.suf}`).join(" · ");
+    case "colors": return q.fields.map(f => `${f.label} ${f.ans}`).join(" · ");
+    case "list": return q.cols.map(c => `${c.label}: ${c.ans.join(", ")} kg`).join(" | ");
+    case "protocol": {
+      const P = PROTOCOLS[state.protocol];
+      return P.groups.flatMap(g => g[2].map(r => `${r[1]}: S ${r[7][0]}, C&J ${r[7][1]}, T ${r[7][2]}`)).join(" · ");
+    }
+    case "wr": { const w = PROTOCOLS[state.protocol].wr; return `Snatch ${w[0]} · Clean & Jerk ${w[1]} · Total ${w[2]}`; }
+  }
+}
+
+// ---------- Rendering ----------
+const qs = $("#qs"), grid = $("#grid");
+const KIND = { mc: "Multiple choice", tf: "True or false", text: "Short answer", fields: "Fill in", colors: "Fill in", list: "Fill in", protocol: "Protocol sheet", wr: "Protocol sheet" };
+
+function setAns(n, v) { state.ans[n] = v; if (state.mode === "practice") delete state.checked[n]; save(); refreshCard(n); updateBoard(); }
+
+function buildCard(q) {
+  const card = el("article", { class: "q", id: "q" + q.n, "data-n": q.n });
+  const head = el("div", { class: "qh" },
+    el("div", { class: "qn", text: "Q." + q.n }),
+    el("div", { class: "qt" }, el("span", { class: "kind", text: KIND[q.type] }), el("p", { text: q.text })),
+    el("div", { class: "pts", text: (q.pts || 1) + (q.pts > 1 ? " pts" : " pt") }));
+  card.append(head);
+  const body = el("div", { class: "body" });
+  card.append(body);
+  renderBody(q, body);
+  if (q.pts > 1) card.append(el("p", { class: "note", text: `${q.pts} points for a complete answer; 1 point off per mistake.` }));
+  card.append(el("div", { class: "fb", "aria-live": "polite" }));
+  const foot = el("div", { class: "qfoot" }, el("button", { class: "btn small chk", type: "button", text: "Check answer", onclick: () => { state.checked[q.n] = true; save(); refreshCard(q.n); updateBoard(); } }));
+  card.append(foot);
+  return card;
+}
+
+function renderBody(q, body) {
+  body.textContent = "";
+  const a = state.ans[q.n];
+  const name = "r" + q.n;
+  if (q.type === "mc") {
+    const box = el("div", { class: "opts", role: "radiogroup" });
+    for (const k of ["a", "b", "c"]) {
+      const id = `q${q.n}${k}`;
+      box.append(el("label", { class: "opt", for: id, "data-k": k },
+        el("input", { type: "radio", name, id, value: k, checked: a === k, onchange: () => setAns(q.n, k) }),
+        el("b", { text: k }), el("span", { text: q.opts[k] })));
+    }
+    body.append(box);
+  } else if (q.type === "tf") {
+    const box = el("div", { class: "tf", role: "radiogroup" });
+    for (const [k, lab] of [["true", "True"], ["false", "False"]]) {
+      const id = `q${q.n}${k}`;
+      box.append(el("label", { class: "opt", for: id, "data-k": k },
+        el("input", { type: "radio", name, id, value: k, checked: a === k, onchange: () => setAns(q.n, k) }), el("span", { text: lab })));
+    }
+    body.append(box);
+  } else if (q.type === "text") {
+    const id = `q${q.n}t`;
+    body.append(el("div", { class: "fields" }, el("div", { class: "field" },
+      el("label", { for: id, text: "Answer" }),
+      el("input", { type: "text", id, value: a || "", autocomplete: "off", oninput: e => setAns(q.n, e.target.value) }),
+      el("span", { class: "suf" }))));
+    body.lastChild.firstChild.style.gridTemplateColumns = "60px minmax(0,1fr)";
+  } else if (q.type === "fields") {
+    const box = el("div", { class: "fields" });
+    q.fields.forEach((f, i) => {
+      const id = `q${q.n}f${i}`;
+      box.append(el("div", { class: "field" },
+        el("label", { for: id, text: f.label }),
+        el("input", { type: "text", inputmode: "decimal", id, value: (a || {})[i] ?? "", autocomplete: "off",
+          oninput: e => setAns(q.n, Object.assign({}, state.ans[q.n], { [i]: e.target.value })) }),
+        el("span", { class: "suf", text: f.suf })));
+    });
+    body.append(box);
+  } else if (q.type === "colors") {
+    const box = el("div", { class: "discs" });
+    q.fields.forEach((f, i) => {
+      const id = `q${q.n}c${i}`; const cur = (a || {})[i] || "";
+      const dot = el("span", { class: "dot", "aria-hidden": "true" });
+      if (cur) { dot.style.borderColor = `var(--disc-${cur.toLowerCase()})`; dot.style.background = `var(--disc-${cur.toLowerCase()})`; }
+      const sel = el("select", { id, onchange: e => {
+          const c = e.target.value.toLowerCase();
+          dot.style.borderColor = c ? `var(--disc-${c})` : ""; dot.style.background = c ? `var(--disc-${c})` : "";
+          setAns(q.n, Object.assign({}, state.ans[q.n], { [i]: e.target.value })); } },
+        el("option", { value: "", text: "Colour…" }), ...COLORS.map(c => el("option", { value: c, text: c, selected: cur === c })));
+      box.append(el("div", { class: "disc" }, dot, el("label", { class: "w", for: id, text: f.label }), sel));
+    });
+    body.append(box);
+  } else if (q.type === "list") {
+    const box = el("div", { class: "cols" });
+    q.cols.forEach((c, ci) => {
+      const ol = el("ol");
+      for (let i = 0; i < 8; i++) {
+        const id = `q${q.n}l${ci}_${i}`; const vals = ((a || {})[ci]) || [];
+        ol.append(el("li", {}, el("input", { type: "text", id, "aria-label": `${c.label} category ${i + 1}`, value: vals[i] || "", autocomplete: "off",
+          oninput: e => { const cur = Object.assign({}, state.ans[q.n]); const arr = (cur[ci] || Array(8).fill("")).slice(); arr[i] = e.target.value; cur[ci] = arr; setAns(q.n, cur); } }),
+          el("span", { text: "kg" })));
+      }
+      box.append(el("div", { class: "col" }, el("h3", { text: c.label }), ol));
+    });
+    body.append(box, el("p", { class: "note", text: "Write super-heavyweight as +110 (or 110+). Any order is accepted." }));
+  } else if (q.type === "protocol") {
+    renderProtocol(q, body);
+  } else if (q.type === "wr") {
+    const P = PROTOCOLS[state.protocol]; const v = a || {};
+    body.append(el("p", { class: "wr" }, `Protocol ${state.protocol + 1} · Previous World Records: `,
+      el("b", { text: `S ${P.prev.S} · J ${P.prev.J} · T ${P.prev.T}` })));
+    const box = el("div", { class: "wrsel" });
+    ["Snatch", "Clean & Jerk", "Total"].forEach((lab, k) => {
+      const id = `q101w${k}`;
+      box.append(el("label", { for: id }, lab, el("select", { id, onchange: e => setAns(101, Object.assign({}, state.ans[101], { [k]: e.target.value })) },
+        el("option", { value: "", text: "Athlete…" }), ...["A","B","C","D","E","F"].map(x => el("option", { value: x, text: x, selected: v[k] === x })),
+        el("option", { value: "none", text: "No new record", selected: v[k] === "none" }))));
+    });
+    body.append(box);
+  }
+}
+
+function renderProtocol(q, body) {
+  const tabs = el("div", { class: "ptabs", role: "group", "aria-label": "Choose a protocol" });
+  PROTOCOLS.forEach((_, i) => tabs.append(el("button", { class: "btn small", type: "button", "aria-pressed": String(state.protocol === i), text: `Protocol ${i + 1}`,
+    onclick: () => { if (state.protocol === i) return; state.protocol = i; delete state.ans[100]; delete state.ans[101]; delete state.checked[100]; delete state.checked[101]; save(); rebuild(100); rebuild(101); updateBoard(); } })));
+  body.append(tabs);
+  const P = PROTOCOLS[state.protocol];
+  const a = state.ans[100]; const v = (a && a.p === state.protocol && a.v) || {};
+  body.append(el("p", { class: "wr" }, "Previous World Records: ", el("b", { text: `S: ${P.prev.S}, J: ${P.prev.J}, T: ${P.prev.T}` })));
+  const t = el("table", { class: "proto" });
+  t.append(el("thead", {},
+    el("tr", {}, el("th", { rowspan: 2, text: "Lot" }), el("th", { rowspan: 2, text: "Name" }), el("th", { colspan: 3, text: "Snatch" }), el("th", { colspan: 3, text: "C&J" }), el("th", { colspan: 6, text: "Best" })),
+    el("tr", {}, ...["1","2","3","1","2","3","S","Place","C&J","Place","Total","Place"].map(h => el("th", { text: h })))));
+  const tb = el("tbody");
+  P.groups.forEach(([gname, time, rows]) => {
+    tb.append(el("tr", {}, el("td", { class: "grp", colspan: 14 }, `${gname} Group`, el("small", { text: `Competition ${time}` }))));
+    rows.forEach(r => {
+      const [lot, nm, sn, cj, bs, bj, tot] = r;
+      const cell = ([kg, ok]) => el("td", { class: ok ? "" : "x", title: ok ? "Good lift" : "No lift", text: kg });
+      const inp = k => { const id = nm + k; return el("td", {}, el("input", { type: "text", inputmode: "numeric", id: "p" + id, "aria-label": `${nm} ${["Snatch","C&J","Total"][k]} place`, value: v[id] ?? "", autocomplete: "off",
+        oninput: e => { const cur = (state.ans[100] && state.ans[100].p === state.protocol) ? state.ans[100] : { p: state.protocol, v: {} }; setAns(100, { p: state.protocol, v: Object.assign({}, cur.v, { [id]: e.target.value }) }); } })); };
+      tb.append(el("tr", {}, el("td", { text: lot }), el("td", { text: nm }), ...sn.map(cell), ...cj.map(cell),
+        el("td", { class: "best", text: bs }), inp(0), el("td", { class: "best", text: bj }), inp(1), el("td", { class: "best", text: tot }), inp(2)));
+    });
+  });
+  t.append(tb);
+  body.append(el("div", { class: "scroll" }, t), el("p", { class: "note", text: "Red “X” = No Lift. Both groups compete in the same category, so rank all six athletes together." }));
+}
+
+function rebuild(n) { const q = QUESTIONS.find(x => x.n === n); const card = $("#q" + n); renderBody(q, $(".body", card)); refreshCard(n); }
+
+function showFeedback(q) { return state.submitted || (state.mode === "practice" && state.checked[q.n]); }
+
+function refreshCard(n) {
+  const q = QUESTIONS.find(x => x.n === n); const card = $("#q" + n); const fb = $(".fb", card);
+  card.classList.remove("ok", "no", "part");
+  card.querySelectorAll(".correct,.wrong,.okf,.nof").forEach(e => e.classList.remove("correct", "wrong", "okf", "nof"));
+  $(".chk", card).hidden = state.mode !== "practice" || state.submitted;
+  const g = grade(q);
+  const cls = g.score === g.pts ? "ok" : g.score > 0 ? "part" : "no";
+  const cell = grid.querySelector(`[data-n="${n}"]`);
+  cell.className = isAnswered(q) ? "done" : "";
+  if (!showFeedback(q)) { fb.className = "fb"; fb.textContent = ""; return; }
+  card.classList.add(cls); cell.className = cls;
+  fb.className = "fb show " + cls; fb.textContent = "";
+  const label = cls === "ok" ? "Good lift." : cls === "part" ? `Part marks: ${g.score} of ${g.pts}.` : (isAnswered(q) ? "No lift." : "Not answered.");
+  fb.append(el("strong", { text: label + (q.pts > 1 && cls !== "part" ? ` ${g.score} of ${g.pts} points.` : "") }));
+  if (cls !== "ok") fb.append(el("span", { class: "ans", text: "Correct answer: " + answerText(q) }));
+  // per-field marks
+  if (q.type === "mc" || q.type === "tf") {
+    const right = q.type === "mc" ? q.ans : String(q.ans);
+    card.querySelectorAll(".opt").forEach(o => { if (o.dataset.k === right) o.classList.add("correct"); else if (o.dataset.k === state.ans[n]) o.classList.add("wrong"); });
+  } else if (q.type === "text") {
+    $("input", card).classList.add(g.score ? "okf" : "nof");
+  } else if (q.type === "fields" || q.type === "colors") {
+    card.querySelectorAll(".body input, .body select").forEach((e, i) => e.classList.add(g.marks[i] ? "okf" : "nof"));
+  } else if (q.type === "list") {
+    q.cols.forEach((c, ci) => card.querySelectorAll(`.col:nth-child(${ci + 1}) input`).forEach((e, i) => { if (e.value.trim()) e.classList.add(g.marks[ci][i] ? "okf" : "nof"); }));
+  } else if (q.type === "protocol") {
+    Object.entries(g.marks).forEach(([id, ok]) => { const e = $("#p" + CSS.escape(id), card); if (e) e.classList.add(ok ? "okf" : "nof"); });
+  } else if (q.type === "wr") {
+    card.querySelectorAll("select").forEach((e, k) => e.classList.add(g.marks[k] ? "okf" : "nof"));
+  }
+}
+
+function updateBoard() {
+  const answered = QUESTIONS.filter(isAnswered).length;
+  $("#s-ans").textContent = `${answered}/${QUESTIONS.length}`;
+  $("#s-bar").style.width = (answered / QUESTIONS.length * 100) + "%";
+  const shown = QUESTIONS.filter(showFeedback);
+  if (shown.length) {
+    const got = shown.reduce((s, q) => s + grade(q).score, 0), of = shown.reduce((s, q) => s + (q.pts || 1), 0);
+    $("#s-pts").textContent = state.submitted ? `${got}/${TOTAL_POINTS}` : `${got}/${of}`;
+  } else $("#s-pts").textContent = "–";
+  $("#b-wrong").disabled = $("#b-retry").disabled = !shown.some(q => grade(q).score < (q.pts || 1));
+  renderResult();
+}
+
+function renderResult() {
+  const box = $("#result");
+  if (!state.submitted) { box.hidden = true; return; }
+  const got = QUESTIONS.reduce((s, q) => s + grade(q).score, 0);
+  const pct = Math.round(got / TOTAL_POINTS * 1000) / 10;
+  const full = QUESTIONS.filter(q => grade(q).score === (q.pts || 1)).length;
+  const missed = QUESTIONS.filter(q => grade(q).score < (q.pts || 1)).map(q => q.n);
+  const lights = el("div", { class: "lights", "aria-hidden": "true" });
+  const whites = pct >= 90 ? 3 : pct >= 75 ? 2 : pct >= 50 ? 1 : 0;
+  for (let i = 0; i < 3; i++) lights.append(el("i", { class: i < whites ? "w" : "r" }));
+  box.textContent = "";
+  box.append(el("h2", { text: "Your result" }),
+    el("div", { style: "display:flex;gap:16px;align-items:center;flex-wrap:wrap" }, el("span", { class: "big", text: pct + "%" }), lights),
+    el("p", { text: `${got} of ${TOTAL_POINTS} points · ${full} of ${QUESTIONS.length} questions with full marks.` }),
+    el("p", { class: "note", text: missed.length ? "Missed or part marks: " + missed.map(n => "Q." + n).join(", ") : "No missed questions." }),
+    el("p", { class: "note", text: "Percentage = your points ÷ 115 × 100, as on the official answer sheet. The lights are a study guide only, not an official pass mark." }));
+  box.hidden = false;
+}
+
+function applyMode() {
+  $("#m-practice").setAttribute("aria-pressed", String(state.mode === "practice"));
+  $("#m-exam").setAttribute("aria-pressed", String(state.mode === "exam"));
+  $("#b-submit").textContent = state.mode === "exam" ? "Submit exam" : "Check all answers";
+  $("#mode-help").textContent = state.mode === "practice"
+    ? "Practice mode: answer at your own pace and press “Check answer” on any question to see if it’s right. Your answers are kept in this browser."
+    : "Exam mode: no feedback until you submit. Answer all 101 questions (115 points), then press “Submit exam” to see your score and the correct answers.";
+  QUESTIONS.forEach(q => refreshCard(q.n));
+  updateBoard();
+}
+
+function showOnly(filter) {
+  QUESTIONS.forEach(q => { $("#q" + q.n).hidden = filter ? !filter(q) : false; });
+  $("#b-all").hidden = !filter; $("#b-wrong").hidden = !!filter;
+}
+
+// ---------- Wire up ----------
+QUESTIONS.forEach(q => {
+  grid.append(el("a", { href: "#q" + q.n, "data-n": q.n, text: q.n, onclick: e => { e.preventDefault(); const c = $("#q" + q.n); c.hidden = false; c.scrollIntoView({ block: "start" }); } }));
+  qs.append(buildCard(q));
+});
+$("#m-practice").onclick = () => { state.mode = "practice"; save(); applyMode(); };
+$("#m-exam").onclick = () => { state.mode = "exam"; if (!state.submitted) state.checked = {}; save(); applyMode(); };
+$("#b-submit").onclick = () => {
+  state.submitted = true; save(); applyMode();
+  $("#result").scrollIntoView({ block: "start" });
+};
+$("#b-wrong").onclick = () => showOnly(q => showFeedback(q) && grade(q).score < (q.pts || 1));
+$("#b-all").onclick = () => showOnly(null);
+$("#b-retry").onclick = () => {
+  QUESTIONS.forEach(q => { if (showFeedback(q) && grade(q).score < (q.pts || 1)) { delete state.ans[q.n]; delete state.checked[q.n]; } });
+  state.submitted = false; save(); QUESTIONS.forEach(q => renderBody(q, $(".body", $("#q" + q.n)))); applyMode(); showOnly(null);
+};
+let armed = false;
+$("#b-reset").onclick = e => {
+  if (!armed) { armed = true; e.target.textContent = "Press again to erase all answers"; setTimeout(() => { armed = false; e.target.textContent = "Start over"; }, 3000); return; }
+  armed = false; e.target.textContent = "Start over";
+  state = { mode: state.mode, ans: {}, checked: {}, submitted: false, protocol: state.protocol }; save();
+  QUESTIONS.forEach(q => renderBody(q, $(".body", $("#q" + q.n)))); showOnly(null); applyMode(); window.scrollTo(0, 0);
+};
+applyMode();
+})();
+</script>
+
+</body>
+</html>
