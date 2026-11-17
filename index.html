@@ -133,6 +133,8 @@ input.nof, select.nof { border-color: var(--bad); background: var(--bad-bg); }
 .disc .dot::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--surface); }
 .disc .w { font-family: var(--f-mono); font-size: 13px; }
 
+.unit { margin: 0; font-size: 13px; padding: 6px 10px; border-radius: 6px; background: var(--sunk); color: var(--fg); justify-self: start; }
+.body { display: grid; gap: 10px; }
 .fb { font-size: 14px; border-radius: 8px; padding: 9px 12px; display: none; }
 .fb.show { display: block; }
 .fb.ok { background: var(--good-bg); color: var(--good); }
@@ -238,7 +240,7 @@ const QUESTIONS = [
   mc(6, "After the Referees’ signal to lower the barbell; the athlete may release the grip on the bar when:",
     "the bar has passed the level of the knees", "the bar has passed the level of the shoulders", "the bar has passed the level of the waist", "b"),
   mc(7, "A pause during the extension of the arms is:", "allowed", "an incorrect movement", "permitted during the execution of the Jerk", "b"),
-  { n: 8, type: "fields", pts: 2, text: "List the minimum age to compete in the following competitions:", fields: [
+  { n: 8, type: "fields", pts: 2, unit: "Answer in years (whole numbers).", text: "List the minimum age to compete in the following competitions:", fields: [
     { label: "World Senior Championships", suf: "years of age", ans: 15 },
     { label: "World Junior Championships", suf: "years of age", ans: 15 },
     { label: "World Youth Championships", suf: "years of age", ans: 13 } ] },
@@ -246,9 +248,9 @@ const QUESTIONS = [
   mc(10, "“Pulling from the hang” means:",
     "stopping the upward movement of the barbell during the pull and is permitted", "accelerating the upward movement of the barbell during the pull and is permitted",
     "stopping the upward movement of the barbell during the pull and is an incorrect movement", "c"),
-  { n: 11, type: "list", pts: 4, text: "List the 8 bodyweight categories for Men (Junior / Senior and Youth).",
+  { n: 11, type: "list", pts: 4, unit: "Answer in kilograms (kg), bodyweight upper limits.", text: "List the 8 bodyweight categories for Men (Junior / Senior and Youth).",
     cols: [{ label: "Junior / Senior", ans: MEN_JS }, { label: "Youth", ans: MEN_Y }] },
-  { n: 12, type: "list", pts: 4, text: "List the 8 bodyweight categories for Women (Junior / Senior and Youth).",
+  { n: 12, type: "list", pts: 4, unit: "Answer in kilograms (kg), bodyweight upper limits.", text: "List the 8 bodyweight categories for Women (Junior / Senior and Youth).",
     cols: [{ label: "Junior / Senior", ans: WOM_JS }, { label: "Youth", ans: WOM_Y }] },
   mc(13, "Choose the correct rule:", "Touching the barbell with his / her footwear is an incorrect movement", "Touching the barbell with his / her footwear is allowed", "Touching the barbell with his / her footwear is allowed before the Clean", "a"),
   mc(14, "Touching the platform with:", "one knee is a correct movement", "the knees during the Clean is a correct movement", "any part of the body other than the feet is an incorrect movement", "c"),
@@ -282,9 +284,9 @@ const QUESTIONS = [
     "Jerk, any deliberate oscillation of the barbell to gain advantage is forbidden. The athlete and the barbell must become motionless.",
     "Snatch, any deliberate oscillation of the barbell to gain advantage is forbidden.", "a"),
   tf(26, "An athlete cannot change the width of their grip during the lift?", false),
-  { n: 27, type: "fields", pts: 2, text: "What are the specifications for competition platforms used at IWF Events?", fields: [
+  { n: 27, type: "fields", pts: 2, unit: "Answer all three in centimetres (cm), not metres or millimetres.", text: "What are the specifications for competition platforms used at IWF Events?", fields: [
     { label: "Width", suf: "cm", ans: 400 }, { label: "Length", suf: "cm", ans: 400 }, { label: "Height", suf: "cm", ans: 10 } ] },
-  { n: 28, type: "fields", pts: 2, text: "How much do the following pieces of equipment weigh?", fields: [
+  { n: 28, type: "fields", pts: 2, unit: "Answer all three in kilograms (kg). Decimals are allowed.", text: "How much do the following pieces of equipment weigh?", fields: [
     { label: "Men's bar", suf: "kg", ans: 20 }, { label: "Women's bar", suf: "kg", ans: 15 }, { label: "1 Collar", suf: "kg", ans: 2.5 } ] },
   mc(29, "The diameter of the grip section on the Women's bar is:", "2.8 cm", "3.0 cm", "2.5 cm", "c"),
   mc(30, "What is the width of training/warm-up platform?", "300 cm", "400 cm", "250 cm", "a"),
@@ -596,6 +598,7 @@ function renderBody(q, body) {
   body.textContent = "";
   const a = state.ans[q.n];
   const name = "r" + q.n;
+  if (q.unit) body.append(el("p", { class: "unit" }, el("strong", { text: "Unit: " }), q.unit));
   if (q.type === "mc") {
     const box = el("div", { class: "opts", role: "radiogroup" });
     for (const k of ["a", "b", "c"]) {
@@ -626,7 +629,7 @@ function renderBody(q, body) {
       const id = `q${q.n}f${i}`;
       box.append(el("div", { class: "field" },
         el("label", { for: id, text: f.label }),
-        el("input", { type: "text", inputmode: "decimal", id, value: (a || {})[i] ?? "", autocomplete: "off",
+        el("input", { type: "text", inputmode: "decimal", id, placeholder: f.suf === "years of age" ? "years" : f.suf, value: (a || {})[i] ?? "", autocomplete: "off",
           oninput: e => setAns(q.n, Object.assign({}, state.ans[q.n], { [i]: e.target.value })) }),
         el("span", { class: "suf", text: f.suf })));
     });
@@ -657,7 +660,7 @@ function renderBody(q, body) {
       }
       box.append(el("div", { class: "col" }, el("h3", { text: c.label }), ol));
     });
-    body.append(box, el("p", { class: "note", text: "Write super-heavyweight as +110 (or 110+). Any order is accepted." }));
+    body.append(box, el("p", { class: "note", text: "Write the open (heaviest) category with a plus sign in front or behind the number. Any order is accepted." }));
   } else if (q.type === "protocol") {
     renderProtocol(q, body);
   } else if (q.type === "wr") {
