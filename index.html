@@ -232,8 +232,9 @@ html { scroll-behavior: smooth; }
 // ---------- Question bank (IWF TO Examination 2025) ----------
 const mc = (n, text, a, b, c, ans) => ({ n, type: "mc", text, opts: { a, b, c }, ans });
 const tf = (n, text, ans) => ({ n, type: "tf", text, ans });
-const MEN_JS = ["60","65","71","79","88","94","110","+110"], MEN_Y = ["56","60","65","71","79","88","94","+94"];
-const WOM_JS = ["48","53","58","63","69","77","86","+86"], WOM_Y = ["44","48","53","58","63","69","77","+77"];
+// Bodyweight categories follow IWF TCRR 2026 (1.2.1–1.2.4), not the 2025 answer key.
+const MEN_JS = ["60","65","70","75","85","95","110","+110"], MEN_Y = ["55","60","65","70","75","85","95","+95"];
+const WOM_JS = ["49","53","57","61","69","77","86","+86"], WOM_Y = ["45","49","53","57","61","69","77","+77"];
 const COLORS = ["Red","Blue","Yellow","Green","White","Black"];
 
 const QUESTIONS = [
@@ -499,10 +500,10 @@ const RULES = {
   8: R("1.1.2", "YOUTH: 13 - 17 years of age; JUNIOR: 15 - 20 years of age; SENIOR: 15+ years of age. All age groups are calculated in the athlete’s year of birth."),
   9: R("Regulation to 6.4, item 10", "Athletes must be weighed in the weightlifting costume that they will be competing in. Athletes must not wear shoes or socks or any other footwear during weigh-in."),
   10: R("2.5.1.1", "Pulling from the hang, defined as: stopping the upward movement of the barbell during the pull. (Listed under Incorrect Movements for All Lifts.)"),
-  11: R("1.2.1 / 1.2.3", "Junior / Senior men: 60, 65, 70, 75, 85, 95, 110, +110 kg. Youth men: 55, 60, 65, 70, 75, 85, 95, +95 kg.", "differs",
-    "The 2026 men’s categories are different from the 2025 answer key (Junior / Senior 60, 65, 71, 79, 88, 94, 110, +110; Youth 56, 60, 65, 71, 79, 88, 94, +94). This test still marks against the 2025 key."),
-  12: R("1.2.2 / 1.2.4", "Junior / Senior women: 49, 53, 57, 61, 69, 77, 86, +86 kg. Youth women: 45, 49, 53, 57, 61, 69, 77, +77 kg.", "differs",
-    "The 2026 women’s categories are different from the 2025 answer key (Junior / Senior 48, 53, 58, 63, 69, 77, 86, +86; Youth 44, 48, 53, 58, 63, 69, 77, +77). This test still marks against the 2025 key."),
+  11: R("1.2.1 / 1.2.3", "Junior / Senior men: 60, 65, 70, 75, 85, 95, 110, +110 kg. Youth men: 55, 60, 65, 70, 75, 85, 95, +95 kg.", "note",
+    "Marked against the 2026 categories. The 2025 answer key listed the old categories (Junior / Senior 60, 65, 71, 79, 88, 94, 110, +110; Youth 56, 60, 65, 71, 79, 88, 94, +94)."),
+  12: R("1.2.2 / 1.2.4", "Junior / Senior women: 49, 53, 57, 61, 69, 77, 86, +86 kg. Youth women: 45, 49, 53, 57, 61, 69, 77, +77 kg.", "note",
+    "Marked against the 2026 categories. The 2025 answer key listed the old categories (Junior / Senior 48, 53, 58, 63, 69, 77, 86, +86; Youth 44, 48, 53, 58, 63, 69, 77, +77)."),
   13: R("2.5.1.11", "Touching the barbell with his / her footwear. If an athlete touches the barbell with his / her footwear before the attempt the Referees must press Red. If the barbell is touched after a successful attempt with his / her footwear the Referees decision will not be reversed, however the Jury will give a warning to the Athlete, if the Athlete repeats this action on a subsequent lift, the lift will be a No Lift.", "note",
     "Still an incorrect movement, but 2026 adds a warning-first rule when the touch happens after a successful attempt."),
   14: R("2.5.1.2", "Touching the platform with any part of the body other than the feet during the execution of the lift."),
@@ -602,6 +603,7 @@ const RULES = {
   100: R("6.8.2", "Snatch and Clean & Jerk: best result – highest first; if identical, the Athlete who achieved the result earliest according to the Calling Order 6.6.6. Total: best result; if identical, the Athlete who achieved the Total result earliest. In the case of tie(s) in different group(s), the athlete(s) who competed earlier in time will be ranked higher regardless the attempt number."),
   101: R("8.1 / 8.11", "A record is a lift that exceeds the previous record by a minimum of one (1) kg. … If two (2) or more athletes achieve the same result and a new record is established, the new record holder is the athlete who completed the lift first regardless of the sequence of the competition, if divided into groups.")
 };
+const BADGE11 = "Updated to 2026 categories";
 const BADGE = { match: "Matches 2026 rule", note: "Same answer, 2026 wording changed", differs: "2026 rule differs from this answer key", none: "No direct 2026 rule" };
 
 const TOTAL_POINTS = QUESTIONS.reduce((s, q) => s + (q.pts || 1), 0); // 115
@@ -856,7 +858,7 @@ function refreshCard(n) {
   if (cls !== "ok") fb.append(el("span", { class: "ans", text: "Correct answer: " + answerText(q) }));
   const r = RULES[n];
   if (r) fb.append(el("div", { class: "rule " + r.s },
-    el("div", { class: "rh" }, el("span", { class: "ref", text: "TCRR 2026 · " + r.ref }), el("span", { class: "badge", text: BADGE[r.s] })),
+    el("div", { class: "rh" }, el("span", { class: "ref", text: "TCRR 2026 · " + r.ref }), el("span", { class: "badge", text: (n === 11 || n === 12) ? BADGE11 : BADGE[r.s] })),
     el("blockquote", { text: r.q }),
     r.note ? el("p", { class: "rnote", text: r.note }) : null));
   // per-field marks
